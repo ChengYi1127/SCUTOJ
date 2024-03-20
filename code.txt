@@ -1,0 +1,253 @@
+第一题
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+class Book
+{
+public:
+	Book(const char* pname, int prc, int num = 0);
+	void display();
+	void borrow();
+	void restore();
+private:
+	char name[20];
+	int price, number;
+};
+
+Book::Book(const char* pname, int prc, int num)
+	:price(prc), number(num)
+{
+	strcpy_s(name, pname);
+	name[sizeof(name) - 1] = '\0';
+}
+
+void Book::display()
+{
+	cout << "name: " << name << endl
+		<< "price: " << price << endl
+		<< "number: " << number << endl;
+}
+
+void Book::borrow()
+{
+	if (number == 0)
+	{
+		cout << "Without this book" << endl;
+	}
+	else
+	{
+		number--;
+		cout << "Borrow successfully, remain: " << number << endl;
+	}
+}
+
+void Book::restore()
+{
+	number++;
+	cout << "Return successfully, remain: " << number << endl;
+}
+
+int main()
+{
+	Book b("C++", 50, 1);
+	b.borrow();
+	b.borrow();
+	b.restore();
+	b.display();
+	return 0;
+}
+
+第二题
+#include<iostream>
+using namespace std;
+
+class Box
+{
+public:
+	Box(int l = 0, int w = 0, int h = 0) :length(l), width(w), height(h)
+	{
+	}
+	void setBox(int l, int w, int h)
+	{
+		length = l;width = w;height = h;
+	}
+	void volume()
+	{
+		volunm = length * width * height;
+		cout << "the volume of this box is: " << volunm << endl;
+	}
+private:
+	int length, width, height, volunm;
+};
+
+int main()
+{
+	Box b(1, 2, 3);
+	b.setBox(2, 4, 6);
+	b.volume();
+	return 0;
+}
+第三题
+#include<iostream>
+#include<iomanip>
+using namespace std;
+
+class student
+{
+public:
+	void scoretotalcount(double s)//设置分数,求总分，总人数
+	{
+		score = s;
+		total += score;
+		count++;
+	}
+	static void sum()
+	{
+		cout << "sum: " << total << endl;
+	}
+
+	static void average()
+	{
+		double t = total / count;
+		cout << "average: " << fixed << setprecision(2) << t << endl;
+	}
+
+private:
+	double score;
+	static double total, count;
+};
+
+double student::total = 0, student::count = 0;
+
+int main()
+{
+	double c;
+	student a;
+	while (cin >> c)
+	{
+		if (c == 101)
+		{
+			break;
+        }
+		a.scoretotalcount(c);//同一个对象，成员函数多次赋值
+	}
+	student::sum();
+	student::average();
+	return 0;
+}
+第四题
+法一：
+#include<iostream>
+#include<iomanip>
+using namespace std;
+
+struct Point
+{
+	double x, y;
+};
+
+class Line
+{
+public:
+	Line(double aa, double bb) :a(aa), b(bb){}
+	friend void setPoint(Line& l1, Line& l2);
+	void print()
+	{
+		cout << "y=" << a << "x+" << b << endl;
+	}
+private:
+	double a, b;
+};
+
+void setPoint(Line& l1, Line& l2)
+{
+	Point T;
+	T.x = (l2.b - l1.b) / (l1.a - l2.a);
+	T.y = l1.a * T.x + l1.b;
+	cout << "intersection: "
+		<< '(' << fixed << setprecision(2) << T.x << ','
+		<< fixed << setprecision(2) << T.y << ')' << endl;
+}
+
+int main()
+{
+	double a, b;
+	cout << "Please input the coefficient of line 1:" << endl;
+	cin >> a >> b;
+	Line l1(a, b);
+	cout << "Please input the coefficient of line 2:" << endl;
+	cin >> a >> b;
+	Line l2(a, b);
+	cout << "line 1: ";
+	l1.print();
+	cout << "line 2: ";
+	l2.print();
+	setPoint(l1,l2);
+	return 0;
+}
+法二：
+#include<iostream>
+#include<iomanip>
+using namespace std;
+
+class Point
+{public:
+	Point(double x=0, double y=0) :x(x), y(y){}
+	void print()
+	{
+		cout << "intersection: "
+			<< '(' << fixed << setprecision(2) << x << ','
+			<< fixed << setprecision(2) << y << ')' << endl;
+	}
+	double Getx(){ return x; }
+	double Gety(){ return y; }
+private:
+	double x, y;
+};
+
+class Line
+{
+public:
+	Line(double a=0, double b=0) :a(a), b(b){}
+	void print()
+	{
+		cout << "y=" << a << "x+" << b << endl;
+	}
+	double Geta() { return a; }
+	double Getb() { return b; }
+private:
+	double a, b;
+};
+
+class setPoint
+{
+public:
+	setPoint(Line l1, Line l2) :l1(l1), l2(l2)
+	{
+		double xx = (l2.Getb() - l1.Getb()) / (l1.Geta() - l2.Geta());
+		double yy= l1.Geta() * xx + l1.Getb();
+		Point T(xx, yy);
+		T.print();
+	}
+private:
+	Line l1, l2;
+	Point T;
+};
+
+int main()
+{
+	double a, b;
+	cout << "Please input the coefficient of line 1:" << endl;
+	cin >> a >> b;
+	Line l1(a, b);
+	cout << "Please input the coefficient of line 2:" << endl;
+	cin >> a >> b;
+	Line l2(a, b);
+	cout << "line 1: ";
+	l1.print();
+	cout << "line 2: ";
+	l2.print();
+	setPoint(l1,l2);
+	return 0;
+}
